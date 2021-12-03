@@ -28,7 +28,7 @@ public class UserController {
     }
     
     @GetMapping("/{id}")
-    public boolean BuscarUserId(@PathVariable("id") int id){
+    public Optional<User> BuscarUserId(@PathVariable("id") int id){
         return UsersServices.BuscarUserId(id);
     }
     
