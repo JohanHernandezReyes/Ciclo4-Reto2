@@ -27,6 +27,11 @@ public class UserController {
         return UsersServices.BuscarUser(email);
     }
     
+    @GetMapping("/{id}")
+    public boolean BuscarUserId(@PathVariable("id") int id){
+        return UsersServices.BuscarUserId(id);
+    }
+    
     @GetMapping("/{email}/{password}")
     public Optional<User> BuscarUserKey(@PathVariable("email") String email, @PathVariable("password") String password){
         return UsersServices.BuscarUserKey(email, password);

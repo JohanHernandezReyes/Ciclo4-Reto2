@@ -6,7 +6,7 @@ img{
 header{
     background-color: rgb(109, 109, 236);
     text-align: center;
-    
+    width: 100%;    
 }
 
 footer{
@@ -45,8 +45,39 @@ a{
     padding-bottom: 10px;
 }
 
+.formbig{
+    margin: 0 auto;
+    width: 450px;
+    border: 2px solid rgb(8, 8, 8);
+    border-radius: 1em;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    column-count: 2;
+    height: 55%;
+}
+
 .imgheader{
     width: 80px;
     vertical-align: 1 cm;
     line-height: 1px;   
+}
+
+section{
+    width:225px;
+    margin: 0 auto;
+    padding-left: 5px;
+    left: 0;
+    height: 95%;
+    bottom: 0;
+}
+
+table{
+    border: 2px solid black;
+    font-size: 15;
+    
+}
+
+th, td, tr, thead{
+    border: 1px solid black;
 }
