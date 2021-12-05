@@ -504,7 +504,7 @@ function ModificarProducto(reference){
     bot.removeAttribute("onclick");bot.setAttribute("onclick", "ActualizarProducto()");
     let myData = reference.valueOf();
     console.log(myData);
-    /*$.ajax({
+    $.ajax({
         url: "http://129.151.117.220:9001/api/cookware/" + myData,
         type: "GET",
         data: myData,
@@ -524,7 +524,7 @@ function ModificarProducto(reference){
             $("#photography").val(ref1.photography);
             $("#available").val(ref1.availability);
         }
-    });*/
+    });
 
 }
 

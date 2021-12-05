@@ -22,7 +22,7 @@ public class CookwareController {
         return ProductosServ.MostrarProductos();
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("/{reference}")
     public Optional<Cookware> BuscarUserId(@PathVariable("reference") String ref){
         return ProductosServ.BuscarProducto(ref);
     }
