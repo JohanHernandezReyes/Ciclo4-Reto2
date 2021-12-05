@@ -22,7 +22,7 @@
            
             <div id="ResultUsers"></div>
            
-            <h3 id="titnew" align="center" hidden="true"><b>Crear Nuevo Usuario:</b><br></h3>
+            <h3 id="titnew" align="center" hidden="true"><b></b><br></h3>
             <div id="formregistro" class="formbig" hidden="true">
                 <section style="float:left">
                     <label><b>Id:</b></label>
@@ -47,13 +47,13 @@
                     <label><b>Confirmar Contraseña:</b></label>
                     <input id="confirm" type="password"><br>
                     <label><b>Tipo Usuario:</b></label><br>
-                    <select style="width:85%" style="height:45%">
+                    <select id="tipo" style="width:85%" style="height:45%">
                         <option value="ADM">Administrador</option>
                         <option value="COORD">Coordinador</option>
                         <option value="VTAS">Asesor de Ventas</option>
-                    </select id="tipo"><br> <br>
+                    </select><br> <br>
                     <div id="bt" style="text-align: center">
-                        <button id="BGUser" onclick="guardarUsuario()">Guardar Usuario</button>
+                        <button id="BGUser" onclick="guardarUsuario()"></button>
                     </div>
                 </section>
             </div>

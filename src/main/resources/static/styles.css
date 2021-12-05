@@ -74,10 +74,11 @@ section{
 
 table{
     border: 2px solid black;
-    font-size: 15;
+    font-size: 18;
     
 }
 
 th, td, tr, thead{
     border: 1px solid black;
+    text-align: center;
 }

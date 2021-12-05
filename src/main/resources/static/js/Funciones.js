@@ -1,3 +1,4 @@
+
 function validarvacio(campo, msj_vacio) {
     if (campo == "") {
         alert(msj_vacio);
@@ -5,6 +6,7 @@ function validarvacio(campo, msj_vacio) {
     }
 }
 
+//Tabla Usuarios
 function validarconfirm(password, confirm) {
     if (password != confirm) {
         alert("La confirmación no coincide con la contraseña ingresada");
@@ -75,9 +77,10 @@ function NuevoUsuario() {
             $("#password").val("");
             $("#confirm").val("");
             $("#address").val("");
+            $("#cel").val("");
             $("#zona").val("");
             $("#identif").val("");
-            alert("se ha guardado el dato");
+            alert("se ha guardado el Usuario");
             document.getElementById("iduser").setAttribute("hidden", "true");
         }
     });
@@ -86,6 +89,7 @@ function NuevoUsuario() {
 
 function guardarUsuario(){
     ValidarDuplicado($("#email").val().toLowerCase(), ListaUsuarios);
+    ConsultarUsuarios();
 }
      
 
@@ -164,8 +168,7 @@ function ConsultarUsuarios() {
         type: "GET",
         datatype: "JSON",
         success: function (respuesta) {
-            $("#resultClient").empty();
-            $("#detalleClient").empty();
+            $("#ResultUsers").empty();
             rta_users = respuesta;
             globalThis;
             console.log(respuesta);
@@ -211,7 +214,7 @@ else{
         myTable += "<td align=center>" + rta_users[i].cellPhone + "</td>";
         myTable += "<td align=center>" + rta_users[i].zone + "</td>";
         myTable += "<td align=center>" + rta_users[i].type + "</td>";
-        myTable += "<td> <button onclick='ModificarUsuario(" + rta_users[i].id +")'>Actualizar</button>"+
+        myTable += "<td> <button onclick='ModificarUsuario(" + rta_users[i].id +")'>Actualizar</button>"+" "+
                     "<button onclick='BorrarUsuario("+rta_users[i].id+")'>Eliminar</button>";
         myTable += "</tr>";
     }
@@ -239,6 +242,8 @@ function BorrarUsuario(idElemento){
 }
 
 function MostrarFormNuevoUsuario(){
+    $("#titnew").html("Crear Nuevo Usuario:");
+    $("#BGUser").html("Guardar Usuario");
     document.getElementById("titnew").removeAttribute("hidden");
     document.getElementById("formregistro").removeAttribute("hidden");
     document.getElementById("viewusers").removeAttribute("hidden");
@@ -247,10 +252,11 @@ function MostrarFormNuevoUsuario(){
 }
 
 function ModificarUsuario(idElement){
-    $("#ResultUsers").empty();
     MostrarFormNuevoUsuario();
     $("#titnew").html("Actualizar Datos del Usuario");
     $("#BGUser").html("Actualizar Datos");
+    let bot = document.getElementById("BGUser");
+    bot.removeAttribute("onclick");bot.setAttribute("onclick", "ActualizarUsuario()");
     let myData = idElement;
     $.ajax({
         url: "http://129.151.117.220:9001/api/user/" + myData,
@@ -271,8 +277,298 @@ function ModificarUsuario(idElement){
             $("#address").val(User1.address);
             $("#cel").val(User1.cellPhone);
             $("#zona").val(User1.zone);
-            $("#tipo").val(User1.type).selected;
+            $("#tipo").val(User1.type);
         }
     });
 
+}
+
+function ActualizarUsuario() {
+    validarvacio($("#name").val(), "Debe ingresar un nombre");
+    validarvacio($("#email").val(), "Debe ingresar un e-mail");
+    validarvacio($("#password").val(), "Debe ingresar una contraseña");
+    validarvacio($("#confirm").val(), "Por favor confirme su contraseña");
+    validarconfirm($("#password").val(), $("#confirm").val());
+    document.getElementById("iduser").removeAttribute("hidden");
+    let myData = {
+        id: parseInt($("#iduser").val()),
+        identification: $("#identif").val(),
+        name: $("#name").val(),
+        address: $("#address").val(),
+        cellPhone: $("#cel").val(),
+        email: $("#email").val().toLowerCase(),
+        password: $("#password").val(),
+        zone: $("#zona").val(),
+        type: $("#tipo").val(),
+    };
+    let dataToSend = JSON.stringify(myData);
+    console.log(dataToSend);
+    $.ajax({
+        url: "http://129.151.117.220:9001/api/user/update",
+        type: "PUT",
+        data: dataToSend,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            console.log(respuesta);
+            $("#name").val("");
+            $("#email").val("");
+            $("#password").val("");
+            $("#confirm").val("");
+            $("#address").val("");
+            $("#zona").val("");
+            $("#cel").val("");
+            $("#identif").val("");
+            alert("se han actualizado los datos del Usuario");
+            document.getElementById("iduser").setAttribute("hidden", "true");
+            ConsultarUsuarios();
+        }
+    });
+    $("#bodyusers").load(location.href + " #bodyusers>*", "");
+    let bot = document.getElementById("BGUser");
+    bot.removeAttribute("onclick");bot.setAttribute("onclick", "guardarUsuario()");
+}
+
+//Tabla Productos
+function ValidarProdDuplicado(reference, callbackFunction) {
+    $.ajax({
+        url: "http://129.151.117.220:9001/api/cookware/all",
+        type: "GET",
+        datatype: "JSON",
+        success: function (respuesta) {
+            console.log(respuesta);
+            callbackFunction(reference, respuesta);
+        }
+    });   
+}    
+
+function ListaProductos(reference, respuesta){
+
+    listproducts=[];       
+    for (i = 0; i < respuesta.length; i++) {
+        listproducts.push(respuesta[i].reference);
+    }
+    console.log(listproducts);
+    p = reference;
+    console.log(p);
+    if (listproducts.includes(p) && p!=null) {
+        alert("La referencia "+p+" ya se encuentra registrada");
+        throw exit;
+    }else{
+        NuevoProducto();
+    }
+}
+
+
+function NuevoProducto() {
+    validarvacio($("#ref").val(), "Debe ingresar la referencia del producto");
+    validarvacio($("#desc").val(), "Debe ingresar una descripcion");
+    validarvacio($("#categ").val(), "Debe ingresar una categoria");
+    validarvacio($("#price").val(), "Debe ingresar el precio de venta");
+  
+    let myData = {
+        reference: $("#ref").val().toUpperCase(),
+        brand: $("#brand").val(),
+        category: $("#categ").val(),
+        materiales: $("#materiales").val(),
+        dimensiones: $("#dimensiones").val(),
+        description: $("#desc").val().toLowerCase(),
+        availability: $("#available").val(),
+        price: $("#price").val(),
+        quantity: $("#Q").val(),
+        photography: $("#photography").val(),
+    };
+    let dataToSend = JSON.stringify(myData);
+    console.log(dataToSend);
+    $.ajax({
+        url: "http://129.151.117.220:9001/api/cookware/new",
+        type: "POST",
+        data: dataToSend,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            console.log(respuesta);
+            $("#ref").val("");
+            $("#brand").val("");
+            $("#categ").val("");
+            $("#materiales").val("");
+            $("#dimensiones").val("");
+            $("#desc").val("");
+            $("#price").val("");
+            $("#Q").val("");
+            $("#photography").val(""),
+            alert("se ha guardado el Producto");
+        }
+    });
+    
+}
+
+function guardarProducto(){
+    ValidarDuplicado($("#ref").val().toUpperCase(), ListaProductos);
+    ConsultarProductos();
+}
+     
+function ConsultarProductos() {
+    $.ajax({
+        url: "http://129.151.117.220:9001/api/cookware/all",
+        type: "GET",
+        datatype: "JSON",
+        success: function (respuesta) {
+            $("#ResultProducts").empty();
+            rta_products = respuesta;
+            globalThis;
+            console.log(respuesta);
+            MostrarProductos(respuesta.items);
+            document.getElementById("viewproducts").setAttribute("hidden", "true");
+            document.getElementById("titnewp").setAttribute("hidden", "true");
+            document.getElementById("formregistrop").setAttribute("hidden", "true");
+            document.getElementById("ResultProducts").removeAttribute("hidden");
+            document.getElementById("newproducts").removeAttribute("hidden");
+            //Verificarlogin();
+        }
+    });
+}
+
+function MostrarProductos() {
+if(rta_products.length==0){
+    var nodata=document.createTextNode("No existen datos en la tabla seleccionada");
+    $("#ResultProducts").append(nodata);
+}
+else{     
+    let myTable = "<table border:'2'>";
+    let thead = "<thead>";
+        thead += "<tr>";
+        thead += "<th>" + "Ref" + "</th>"
+        thead += "<th>" + "Descripcion" + "</th>"
+        thead += "<th>" + "Brand" + "</th>"
+        thead += "<th>" + "Categoría" + "</th>"
+        thead += "<th>" + "Precio" + "</th>"
+        thead += "<th>" + "Cantidad" + "</th>"
+        thead += "<th>" + "Dimensiones" + "</th>"
+        thead += "<th>" + "Disponible" + "</th>"
+        thead += "<th>" + "Acciones" + "</th>"
+        thead += "</tr>";
+    thead += "<thead>";
+    myTable += thead;
+    for (i = 0; i < rta_products.length; i++) {
+        myTable += "<tr>";
+        myTable += "<td align=center>" + rta_products[i].reference + "</td>";
+        myTable += "<td align=center>" + rta_products[i].description + "</td>";
+        myTable += "<td align=center>" + rta_products[i].brand + "</td>";
+        myTable += "<td align=center>" + rta_products[i].category + "</td>";
+        myTable += "<td align=center>" + rta_products[i].price + "</td>";
+        myTable += "<td align=center>" + rta_products[i].quantity + "</td>";
+        myTable += "<td align=center>" + rta_products[i].dimensiones + "</td>";
+        myTable += "<td align=center>" + rta_products[i].availability + "</td>";
+        myTable += "<td> <button onclick='ModificarProducto(" + rta_products[i].reference +")'>Actualizar</button>"+" "+
+                    "<button onclick='BorrarProducto("+rta_products[i].reference+")'>Eliminar</button>";
+        myTable += "</tr>";
+    }
+    myTable += "</table>";
+    $("#ResultProducts").append(myTable);
+}
+}
+
+function BorrarProducto(reference){
+    let myData = reference.valueOf();
+    $.ajax({
+        url:"http://129.151.117.220:9001/api/cookware/"+myData,
+        type:"DELETE",
+        data:myData,
+        contentType:"application/JSON",
+        datatype:"JSON",
+        success:function(respuesta){
+            $("#ResultProducts").empty();
+            ConsultarProductos();
+            alert("Se ha Eliminado el producto " + reference);
+        }
+        
+    });
+}
+
+function MostrarFormNuevoProducto(){
+    $("#titnewp").html("Crear Nuevo Producto:");
+    $("#BGProduct").html("Guardar Producto");
+    document.getElementById("titnewp").removeAttribute("hidden");
+    document.getElementById("formregistrop").removeAttribute("hidden");
+    document.getElementById("viewproducts").removeAttribute("hidden");
+    $("#ResultProducts").empty();
+    document.getElementById("newproducts").setAttribute("hidden", "true");
+}
+
+function ModificarProducto(reference){
+    MostrarFormNuevoProducto();
+    $("#titnewp").html("Actualizar Datos del Producto");
+    $("#BGProduct").html("Actualizar Datos");
+    let bot = document.getElementById("BGProduct");
+    bot.removeAttribute("onclick");bot.setAttribute("onclick", "ActualizarProducto()");
+    let myData = reference.valueOf();
+    console.log(myData);
+    /*$.ajax({
+        url: "http://129.151.117.220:9001/api/cookware/" + myData,
+        type: "GET",
+        data: myData,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            ref1 = respuesta;
+            console.log(ref1);
+            $("#ref").val(ref1.reference);
+            $("#brand").val(ref1.brand);
+            $("#categ").val(ref1.category);
+            $("#desc").val(ref1.description);
+            $("#materiales").val(ref1.materiales);
+            $("#dimensiones").val(ref1.dimensiones);
+            $("#Q").val(ref1.quantity);
+            $("#price").val(ref1.price);
+            $("#photography").val(ref1.photography);
+            $("#available").val(ref1.availability);
+        }
+    });*/
+
+}
+
+function ActualizarProducto() {
+    validarvacio($("#ref").val(), "Debe ingresar la referencia del producto");
+    validarvacio($("#desc").val(), "Debe ingresar una descripcion");
+    validarvacio($("#categ").val(), "Debe ingresar una categoria");
+    validarvacio($("#price").val(), "Debe ingresar el precio de venta");
+
+    let myData = {
+        reference: $("#ref").val().toUpperCase(),
+        brand: $("#brand").val(),
+        category: $("#categ").val(),
+        materiales: $("#materiales").val(),
+        dimensiones: $("#dimensiones").val(),
+        description: $("#desc").val().toLowerCase(),
+        availability: $("#available").val(),
+        price: $("#price").val(),
+        quantity: $("#Q").val(),
+        photography: $("#photography").val(),
+    };
+    let dataToSend = JSON.stringify(myData);
+    console.log(dataToSend);
+    $.ajax({
+        url: "http://129.151.117.220:9001/api/cookware/update",
+        type: "PUT",
+        data: dataToSend,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            console.log(respuesta);
+            $("#ref").val("");
+            $("#brand").val("");
+            $("#categ").val("");
+            $("#materiales").val("");
+            $("#dimensiones").val("");
+            $("#desc").val("");
+            $("#price").val("");
+            $("#Q").val("");
+            $("#photography").val(""),
+            alert("se han actualizado los datos del Producto");
+            ConsultarProductos();
+        }
+    });
+    let bot = document.getElementById("BGProduct");
+    bot.removeAttribute("onclick");bot.setAttribute("onclick", "guardarProducto()");
 }
