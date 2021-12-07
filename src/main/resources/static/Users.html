@@ -13,9 +13,9 @@
         <script type="text/javascript" src="js/Funciones.js"></script>
     </head>
 
-    <body id="bodyusers" class="container aut" onload=nuevoid();>
+    <body class="container aut" onload="nuevoid(); Verificarlogin();">
         <header>
-            <h1>La Sarten por el Mango</h1>
+            <h1><img class="imgheader" src="/logo_sin_fondo.png">La Sarten por el Mango</h1>
         </header>
             <button id="viewusers" onclick="ConsultarUsuarios()">Consultar Usuarios</button><br><br>
             <button id="newusers" onclick="MostrarFormNuevoUsuario()">Crear un usuario</button><br><br>
@@ -39,15 +39,15 @@
                     <input id="zona" type="text"><br>
                 </section>
                 <section style="float:right">
-                    <label style="height: 16%"><b></b></label>
+                    <label style="height: 12%"><b></b></label>
                     <label><b>E-mail:</b></label><br>
                     <input id="email" type="text"><br>
-                    <label><b>Contraseña:</b></label>
-                    <input id="password" type="password"><br>
-                    <label><b>Confirmar Contraseña:</b></label>
-                    <input id="confirm" type="password"><br>
+                    <label for="password"><b>Contraseña (Min. 8 caract.):</b></label>
+                    <input id="password" type="password" pattern=".{8,}"><br>
+                    <label for="confirm"><b>Confirmar Contraseña:</b></label>
+                    <input id="confirm" type="password" minlength="8"><br>
                     <label><b>Tipo Usuario:</b></label><br>
-                    <select id="tipo" style="width:85%" style="height:45%">
+                    <select id="tipo" style="width:85%" style="height:55%">
                         <option value="ADM">Administrador</option>
                         <option value="COORD">Coordinador</option>
                         <option value="VTAS">Asesor de Ventas</option>

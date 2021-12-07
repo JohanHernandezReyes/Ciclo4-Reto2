@@ -6,10 +6,53 @@ function validarvacio(campo, msj_vacio) {
     }
 }
 
+function Verificarlogin(){
+
+    try {
+        var sesion = document.getElementById("welcome");
+        console.log(sessionStorage.autosave);
+        sessionStorage.setItem("autosave", sesion.innerHTML);
+
+        if (sessionStorage.getItem("autosave")) {
+            sesion.html(sessionStorage.getItem("autosave"));
+        }
+
+        sesion.addEventListener("change", function () {
+            sessionStorage.setItem("autosave", sesion.innerHTML);
+        });
+
+        console.log(sessionStorage);
+    }
+
+    catch {
+
+    }
+
+    if (sessionStorage.autosave == null || sessionStorage.autosave == " ") {
+        $(".aut").hide();
+        $(".unaut").show();
+        console.log("Usuario no autenticado");
+    }
+}
+
+
+function cerrarsesion(){
+    $("#welcome").html("");
+    document.getElementById("ingreso").setAttribute("hidden", "true");
+    Verificarlogin();
+    document.getElementById("formlogin").removeAttribute("hidden");
+    document.getElementById("btnlog").removeAttribute("hidden");
+}
+
 //Tabla Usuarios
 function validarconfirm(password, confirm) {
     if (password != confirm) {
         alert("La confirmación no coincide con la contraseña ingresada");
+        throw 'exit';
+    }
+
+    if($("#password").val().length < 8) {
+        alert("La contraseña de tener minimo 8 caracteres");
         throw 'exit';
     }
 }
@@ -135,6 +178,7 @@ function Autenticacion(email, password) {
                 document.getElementById("btnlog").setAttribute("hidden", "true");
                 document.getElementById("ingreso").removeAttribute("hidden");
                 $("#welcome").html("Bienvenido "+respuesta.name+"<br>Ha ingresado con un rol de: "+respuesta.type);
+                Verificarlogin();
             }
 
         }
@@ -178,7 +222,6 @@ function ConsultarUsuarios() {
             document.getElementById("formregistro").setAttribute("hidden", "true");
             document.getElementById("ResultUsers").removeAttribute("hidden");
             document.getElementById("newusers").removeAttribute("hidden");
-            //Verificarlogin();
         }
     });
 }
@@ -235,7 +278,7 @@ function BorrarUsuario(idElemento){
             $("#ResultUsers").empty();
             ConsultarUsuarios();
             alert("Se ha Eliminado el usuario con id: " + idElemento);
-            $("#bodyusers").load(location.href + " #bodyusers>*", "");
+            location.reload();
         }
         
     });
@@ -324,9 +367,9 @@ function ActualizarUsuario() {
             ConsultarUsuarios();
         }
     });
-    $("#bodyusers").load(location.href + " #bodyusers>*", "");
     let bot = document.getElementById("BGUser");
     bot.removeAttribute("onclick");bot.setAttribute("onclick", "guardarUsuario()");
+    location.reload();
 }
 
 //Tabla Productos
@@ -424,7 +467,6 @@ function ConsultarProductos() {
             document.getElementById("formregistrop").setAttribute("hidden", "true");
             document.getElementById("ResultProducts").removeAttribute("hidden");
             document.getElementById("newproducts").removeAttribute("hidden");
-            //Verificarlogin();
         }
     });
 }
@@ -460,8 +502,8 @@ else{
         myTable += "<td align=center>" + rta_products[i].quantity + "</td>";
         myTable += "<td align=center>" + rta_products[i].dimensiones + "</td>";
         myTable += "<td align=center>" + rta_products[i].availability + "</td>";
-        myTable += "<td> <button onclick='ModificarProducto(" + rta_products[i].reference +")'>Actualizar</button>"+" "+
-                    "<button onclick='BorrarProducto("+rta_products[i].reference+")'>Eliminar</button>";
+        myTable += "<td> <button onclick='ModificarProducto(" + (i+1) +")'>Actualizar</button>"+" "+
+                    "<button onclick='BorrarProducto("+ (i+1) +")'>Eliminar</button>";
         myTable += "</tr>";
     }
     myTable += "</table>";
@@ -469,8 +511,11 @@ else{
 }
 }
 
-function BorrarProducto(reference){
-    let myData = reference.valueOf();
+function BorrarProducto(numrow){
+
+    let fila = document.getElementsByTagName("table")[0].getElementsByTagName("tr")[numrow].getElementsByTagName("td")[0];
+    let myData= fila.firstChild.nodeValue;
+
     $.ajax({
         url:"http://129.151.117.220:9001/api/cookware/"+myData,
         type:"DELETE",
@@ -480,7 +525,7 @@ function BorrarProducto(reference){
         success:function(respuesta){
             $("#ResultProducts").empty();
             ConsultarProductos();
-            alert("Se ha Eliminado el producto " + reference);
+            alert("Se ha Eliminado el producto " + celda);
         }
         
     });
@@ -496,14 +541,18 @@ function MostrarFormNuevoProducto(){
     document.getElementById("newproducts").setAttribute("hidden", "true");
 }
 
-function ModificarProducto(reference){
+function ModificarProducto(numrow){
+
+    let fila = document.getElementsByTagName("table")[0].getElementsByTagName("tr")[numrow].getElementsByTagName("td")[0];
+    let myData= fila.firstChild.nodeValue;
+
     MostrarFormNuevoProducto();
     $("#titnewp").html("Actualizar Datos del Producto");
     $("#BGProduct").html("Actualizar Datos");
     let bot = document.getElementById("BGProduct");
     bot.removeAttribute("onclick");bot.setAttribute("onclick", "ActualizarProducto()");
-    let myData = reference.valueOf();
-    console.log(myData);
+
+    
     $.ajax({
         url: "http://129.151.117.220:9001/api/cookware/" + myData,
         type: "GET",
@@ -522,7 +571,7 @@ function ModificarProducto(reference){
             $("#Q").val(ref1.quantity);
             $("#price").val(ref1.price);
             $("#photography").val(ref1.photography);
-            $("#available").val(ref1.availability);
+            $("#available").val(String(ref1.availability));
         }
     });
 

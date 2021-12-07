@@ -82,3 +82,7 @@ th, td, tr, thead{
     border: 1px solid black;
     text-align: center;
 }
+
+input:invalid {
+    border: 2px solid red;
+}
