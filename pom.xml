@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>Ciclo4</groupId>
-    <artifactId>Reto2</artifactId>
+    <artifactId>Ciclo4-Reto2</artifactId>
     <version>1.0</version>
-    <name>Reto2</name>
+    <name>Ciclo4-Reto2</name>
     <description>Ciclo4-Reto2-MongoDB</description>
     <properties>
         <java.version>1.8</java.version>
